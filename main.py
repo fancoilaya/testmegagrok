@@ -1,5 +1,5 @@
 
-# --- PRODUCTION main.py FOR RENDER BACKGROUND WORKER ---
+# --- TEST main.py FOR TELEGRAM BOT ON RENDER ---
 import os
 import signal
 import sys
@@ -11,7 +11,7 @@ TOKEN = os.getenv("Telegram_token")
 if not TOKEN:
     raise RuntimeError("Telegram_token environment variable is missing!")
 
-print("Bot starting with token:", TOKEN[:10], "...")
+print("Your bot is now running ✅")
 
 bot = TeleBot(TOKEN)
 
@@ -19,32 +19,28 @@ bot = TeleBot(TOKEN)
 def shutdown_handler(signum, frame):
     print("Received shutdown signal. Cleaning up...")
     try:
-        # Delete webhook to avoid conflicts
         requests.get(f"https://api.telegram.org/bot{TOKEN}/deleteWebhook")
         print("Webhook deleted successfully.")
     except Exception as e:
         print(f"Error deleting webhook: {e}")
     sys.exit(0)
 
-# Register SIGTERM and SIGINT handlers
 signal.signal(signal.SIGTERM, shutdown_handler)
 signal.signal(signal.SIGINT, shutdown_handler)
 
-# ✅ Webhook cleanup before starting polling
+# ✅ Clear webhook before polling
 try:
     requests.get(f"https://api.telegram.org/bot{TOKEN}/deleteWebhook")
     print("Webhook cleared before polling.")
 except Exception as e:
     print(f"Error clearing webhook: {e}")
 
-# ✅ Bot command handlers
+# ✅ Simple command handler
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.reply_to(message, "Bot is alive and kicking! ✅")
+    bot.reply_to(message, "Your bot is now running ✅")
 
-print("Polling started...")
-
-# ✅ Safe polling loop
+# ✅ Start polling
 while True:
     try:
         bot.polling(none_stop=True, interval=0, timeout=20)
@@ -52,4 +48,3 @@ while True:
         print(f"Polling error: {e}. Restarting in 5s...")
         import time
         time.sleep(5)
-
