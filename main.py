@@ -40,7 +40,7 @@ except Exception as e:
 # ✅ Bot command handlers
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.reply_to(message, "Bot is alive! ✅")
+    bot.reply_to(message, "Bot is alive and kicking! ✅")
 
 print("Polling started...")
 
